@@ -243,29 +243,21 @@ Joomla = window.Joomla || {};
         self.getFilterFields().forEach((i) => {
           i.value = '';
           self.checkFilter(i);
-
-          if (window.jQuery && window.jQuery.chosen) {
-            window.jQuery(i).trigger('chosen:updated');
-          }
         });
       }
 
       if (self.clearListOptions) {
-        self.getListFields().forEach((i) => {
-          i.value = '';
-          self.checkFilter(i);
-
-          if (window.jQuery && window.jQuery.chosen) {
-            window.jQuery(i).trigger('chosen:updated');
-          }
-        });
-
-        // Special case to limit box to the default config limit
-        document.querySelector('#list_limit').value = self.options.defaultLimit;
-
-        if (window.jQuery && window.jQuery.chosen) {
-          window.jQuery('#list_limit').trigger('chosen:updated');
+        if (self.getListFields()) {
+          self.getListFields().forEach((i) => {
+            i.value = '';
+            self.checkFilter(i);
+          });
         }
+      }
+
+      // Special case to limit box to the default config limit
+      if (document.querySelector('#list_limit')) {
+        document.querySelector('#list_limit').value = self.options.defaultLimit;
       }
 
       self.theForm.submit();
@@ -326,7 +318,9 @@ Joomla = window.Joomla || {};
     }
 
     getListFields() {
-      return Array.prototype.slice.call(this.listContainer.querySelectorAll('select'));
+      if (this.listContainer) {
+        return Array.prototype.slice.call(this.listContainer.querySelectorAll('select'));
+      }
     }
 
     // Common container functions
@@ -435,10 +429,6 @@ Joomla = window.Joomla || {};
             }
           }
         });
-
-        if (window.jQuery && window.jQuery.chosen) {
-          window.jQuery(this.orderField).trigger('chosen:updated');
-        }
       }
 
       this.activeOrder = this.orderField.value;
